@@ -1,67 +1,56 @@
-require 'rest-client'
 require 'pry'
-require 'json'
 
 class MaxDrawdownCalculator
-  Drawdown = Struct.new(:draw_down, :peak_price)
+  attr_reader :close_prices
 
-  def initialize(data)
-    @data = [
-      [1,1,1,1, 1, 100000],
-      [1,1,1,1, 1, 150000],
-      [1,1,1,1, 1, 90000],
-      [1,1,1,1, 1, 120000],
-      [1,1,1,1, 1, 80000],
-      [1,1,1,1, 1, 200000]
-    ]
-    @peak_price = @data.first[5]
-    @temporary_date_array = []
-    @array_of_draw_downs_and_peak_prices = []
+  def initialize(close_prices)
+    @close_prices = close_prices #[100000, 150000, 90000, 120000, 80000, 200000]
   end
 
-  def max_draw_down_percentage # => 0.4666666666666667
-    draw_down_percentage max_draw_down
+  def max_drawdown_percentage
+    hash = max_drawdown_and_initial_peak_price
+    hash[:draw_down].to_f / hash[:peak_price].to_f
   end
 
   private
 
-    def draw_down_percentage(draw_down_class) # => 0.4666666666666667
-      draw_down_class.draw_down.to_f / draw_down_class.peak_price.to_f
+    # range of prices between a peak price and the next,
+    # including first peak price, but not last peak price.
+    def price_valleys #=> [[100000], [150000, 90000, 120000, 80000]]
+      close_prices.each_with_index.map do |price, i|
+        last_peak_price = close_prices[0]
+        close_prices.shift(i) if new_peak_price?(last_peak_price, price)
+      end.compact
     end
 
-     # => #<struct MaxDrawdownCalculator::Drawdown draw_down=70000, peak_price=150000>
-    def draw_down_class(temporary_date_array, peak_price)
-      Drawdown.new(calculate_draw_down(peak_price, temporary_date_array), peak_price)
-    end
-
-    def calculate_draw_down(peak_price, temporary_date_array) # => 80000
-      peak_price - lowest_price_between_peak_prices(temporary_date_array)
-    end
-
-    # Find lowest price between old peak price and new peak price.
-    def lowest_price_between_peak_prices(dates_between_two_peak_prices) # => 70000
-      @dates_between_two_peak_prices.map { |date| date[5] }.min
-    end
-
-    def max_draw_down # => #<struct MaxDrawdownCalculator::Drawdown draw_down=70000, peak_price=150000>
-      array_of_draw_downs_and_peak_prices.max_by{ |draw_down| draw_down[:draw_down] }
-    end
-
-    def array_of_draw_downs_and_peak_prices
-      @data.each do |date|
-        @dates_between_two_peak_prices << date
-        if new_peak_price?(@peak_price, date[5])
-          @array_of_draw_downs_and_peak_prices << draw_down_class(@dates_between_two_peak_prices, @peak_price)
-          @peak_price = date[5] # Change to new peak price.
-          @dates_between_two_peak_prices.clear # Empties the array.
-        end
+    # => [{:draw_down=>0, :peak_price=>100000},
+    #    {:draw_down=>70000, :peak_price=>150000}]
+    def drawdowns_and_start_peak_prices
+      price_valleys.map do |price_valley|
+        peak_price = initial_peak_price_in(price_valley)
+        { draw_down: draw_down(peak_price, lowest_price_in(price_valley)),
+          peak_price: peak_price}
       end
-      @array_of_draw_downs_and_peak_prices
     end
 
-    def new_peak_price?(peak_price, price)
-      peak_price < price
+    def initial_peak_price_in(price_valley)
+      price_valley[0]
+    end
+
+    def lowest_price_in(price_array)
+      price_array.min
+    end
+
+    def draw_down(peak_price, lowest_price)
+      peak_price - lowest_price
+    end
+
+    def max_drawdown_and_initial_peak_price
+      drawdowns_and_start_peak_prices.
+        max_by{ |drawdown_and_peak_price| drawdown_and_peak_price[:draw_down] }
+    end
+
+    def new_peak_price?(last_peak_price, price)
+      last_peak_price < price
     end
 end
-
-puts MaxDrawdownCalculator.new('bla').max_draw_down_percentage
