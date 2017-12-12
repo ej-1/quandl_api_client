@@ -27,7 +27,7 @@ class ClientRunner
       begin
         api_client.send(request_type, @ticker, @date)
       rescue
-        retry_request
+        retry_request(api_client, request_type)
       end
     end
 
@@ -37,26 +37,26 @@ class ClientRunner
 
     def calculate_roi_and_max_drawdown(json)
       if valid_data_format?(json)
-        data = reformat_data(json)
-        [roi(data.first[:close_price], data.last[:close_price]), max_drawdown(data)]
+        closing_prices = reformat_data(json)
+        [roi(closing_prices.first, closing_prices.last), max_drawdown(closing_prices)]
       else
         'Qandl data no longer follows expected JSON format.'
       end
     end
 
     def reformat_data(json) # =># [{ date: 2017-01-01, close_price: 31 }]
-      DataFormatter.new(json).date_and_closing_price
+      DataFormatter.new(json).closing_prices
     end
 
     def max_drawdown(date_and_close_price_data)
-      MaxDrawdownCalculator.new(date_and_close_price_data).max_draw_down_percentage
+      MaxDrawdownCalculator.new(date_and_close_price_data).max_drawdown_percentage
     end
 
     def roi(initial_price, final_value)
       return_on_investment(initial_price, final_value)
     end
 
-    def retry_request
-      3.times { send_request_to_quandl_api }
+    def retry_request(api_client, request_type)
+      3.times { api_client.send(request_type, @ticker, @date) }
     end
 end

@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'pry'
-#require 'rails_helper'
 require './client_runner.rb'
 require './main.rb'
 require './quandl_api_client.rb'
@@ -17,6 +16,7 @@ describe ClientRunner do
       command_line_input = 'AAPL 1981-01-21'
 
       @client_runner.run_request(@api_client, 'get', command_line_input)
+      expect([5.005913043478261, 0.7641560309185692])
     end
   end
 end

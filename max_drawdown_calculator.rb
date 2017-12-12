@@ -18,8 +18,8 @@ class MaxDrawdownCalculator
     # including first peak price, but not last peak price.
     def price_valleys #=> [[100000], [150000, 90000, 120000, 80000]]
       close_prices.each_with_index.map do |price, i|
-        last_peak_price = close_prices[0]
-        close_prices.shift(i) if new_peak_price?(last_peak_price, price)
+        previous_peak_price = close_prices[0]
+        close_prices.shift(i) if new_peak_price?(previous_peak_price, price)
       end.compact
     end
 
@@ -50,7 +50,7 @@ class MaxDrawdownCalculator
         max_by{ |drawdown_and_peak_price| drawdown_and_peak_price[:draw_down] }
     end
 
-    def new_peak_price?(last_peak_price, price)
-      last_peak_price < price
+    def new_peak_price?(previous_peak_price, price)
+      previous_peak_price < price
     end
 end

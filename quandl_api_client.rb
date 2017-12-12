@@ -3,6 +3,8 @@ require 'pry'
 require 'json'
 require 'httparty'
 
+QuandlApiClient = Class.new(StandardError)
+
 class QuandlApiClient
   include HTTParty
   BASE_URI = 'https://www.quandl.com'
@@ -23,8 +25,7 @@ class QuandlApiClient
   private
 
     def api_key
-      #ENV['QUANDL_API_KEY']
-      'bpduywUhxtPxKNj_RWKx'
+      ENV['QUANDL_API_KEY'].nil? ? (raise QuandlApiClient.new('missing API key')) : ENV['QUANDL_API_KEY']
     end
 
     def base_path
