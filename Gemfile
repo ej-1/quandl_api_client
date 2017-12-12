@@ -15,5 +15,4 @@ gem 'httparty'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6' # Do I still need this?
-  gem 'rspec-command' # Used to test CLI app.
 end
