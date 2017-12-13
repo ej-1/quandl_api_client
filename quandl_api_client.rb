@@ -9,14 +9,15 @@ class QuandlApiClient
   include HTTParty
   BASE_URI = 'https://www.quandl.com'
 
-  def options(ticker, start_date)
-    { query: { ticker: ticker, api_key: api_key }, start_date: start_date }
+  def options(start_date)
+    { query: { api_key: api_key, start_date: start_date } }
   end
 
   def get(ticker, start_date)
     handle_timeouts do
-      options = options(ticker, start_date)
-      url = "#{ BASE_URI }#{ base_path }"
+      options = options(start_date)
+      url = "#{ BASE_URI }#{ base_path(ticker) }"
+      binding.pry
       response = self.class.get(url, options)
       response.parsed_response
     end
@@ -28,8 +29,8 @@ class QuandlApiClient
       ENV['QUANDL_API_KEY'].nil? ? (raise QuandlApiClient.new('missing API key')) : ENV['QUANDL_API_KEY']
     end
 
-    def base_path
-      '/api/v3/datatables/WIKI/PRICES' # need to specifiy format
+    def base_path(ticker)
+      "/api/v3/datasets/WIKI/#{ticker.upcase}/data.json?" # used /datasets instead /datatables. Kept getting this error "You cannot use start_date column as a filter.", with the link providede in instructions.
     end
 
     def handle_timeouts
