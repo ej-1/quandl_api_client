@@ -1,17 +1,13 @@
 require 'spec_helper'
-require 'pry'
 require './command_input_parse_validator.rb'
 require 'date'
 
 describe CommandInputParseAndValidator do
 
   before do
-  @dummy_class = Class.new
-  @dummy_class.extend(CommandInputParseAndValidator)
+    @dummy_class = Class.new
+    @dummy_class.extend(CommandInputParseAndValidator)
   end
-
-  #let(:extended_class) { Class.new { extend A } }
-  #let(:including_class) { Class.new { include A } }
 
   describe do 'receives wrong number of arguments'
     context 'too many' do

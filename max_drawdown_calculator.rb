@@ -1,5 +1,3 @@
-require 'pry'
-
 class MaxDrawdownCalculator
   attr_reader :close_prices
 

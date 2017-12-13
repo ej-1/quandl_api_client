@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 require './client_runner.rb'
 require './main.rb'
 require './quandl_api_client.rb'

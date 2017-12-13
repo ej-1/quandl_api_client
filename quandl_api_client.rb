@@ -1,6 +1,4 @@
 require 'rest-client'
-require 'pry'
-require 'json'
 require 'httparty'
 
 QuandlApiClient = Class.new(StandardError)

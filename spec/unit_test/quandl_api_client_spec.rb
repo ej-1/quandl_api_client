@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 require './quandl_api_client.rb'
 
 describe QuandlApiClient do

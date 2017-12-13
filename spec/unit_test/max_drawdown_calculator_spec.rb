@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 require './max_drawdown_calculator.rb'
 
 describe MaxDrawdownCalculator do
