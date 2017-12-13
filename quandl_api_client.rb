@@ -9,10 +9,6 @@ class QuandlApiClient
   include HTTParty
   BASE_URI = 'https://www.quandl.com'
 
-  def options(start_date)
-    { query: { api_key: api_key, start_date: start_date } }
-  end
-
   def get(ticker, start_date)
     handle_timeouts do
       options = options(start_date)
@@ -23,6 +19,10 @@ class QuandlApiClient
   end
 
   private
+
+    def options(start_date)
+      { query: { api_key: api_key, start_date: start_date } }
+    end
 
     def api_key
       ENV['QUANDL_API_KEY'].nil? ? (raise QuandlApiClient.new('missing API key')) : ENV['QUANDL_API_KEY']
@@ -36,7 +36,7 @@ class QuandlApiClient
       begin
         yield
       rescue Net::OpenTimeout, Net::ReadTimeout
-        {} # skicka HTTPparty exception
+        {error: {message: 'Timout error'}} # skicka HTTPparty exception
       end
     end
 end

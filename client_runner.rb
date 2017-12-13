@@ -15,10 +15,9 @@ class ClientRunner
   include DataValidator
 
   def run_request(api_client, request_type, command_line_input, email_recipient)
-    parse_input(command_line_input)
+    parse_input_and_validate(command_line_input)
     unless @ticker.nil? || @date.nil?
       response = send_request_to_api(api_client, request_type)
-      # if resposne is ok.
       handle_response(response, email_recipient)
     end
   end
@@ -28,10 +27,11 @@ class ClientRunner
     def handle_response(response, email_recipient)
       if response['quandl_error']
         puts response['quandl_error']
+      elsif response[:error]
+        puts response[:error]
       elsif valid_data_format?(response)
         roi, max_drawdown = calculate_roi_and_max_drawdown(response)
-        message_components = {roi: roi, max_drawdown: max_drawdown}
-        send_email_notification(email_recipient, message_components)
+        send_email_notification(email_recipient, {roi: roi, max_drawdown: max_drawdown})
       else
         puts 'something probably did not go as you wanted'
       end
@@ -43,7 +43,7 @@ class ClientRunner
       message.deliver_now
     end
 
-    def parse_input(command_line_input) # => 'AAPL' '2017-08-01'
+    def parse_input_and_validate(command_line_input) # => 'aapl' '2017-08-01'
       @ticker, @date = parse_and_validate_input(command_line_input)
     end
 
@@ -60,12 +60,8 @@ class ClientRunner
     end
 
     def calculate_roi_and_max_drawdown(json)
-      if valid_data_format?(json)
-        closing_prices = reformat_data(json)
-        [roi(closing_prices.first, closing_prices.last), max_drawdown(closing_prices)]
-      else
-        'Qandl data no longer follows expected JSON format.'
-      end
+      closing_prices = reformat_data(json)
+      [roi(closing_prices.first, closing_prices.last), max_drawdown(closing_prices)]
     end
 
     def reformat_data(json) # =># [{ date: 2017-01-01, close_price: 31 }]
