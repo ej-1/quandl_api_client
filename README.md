@@ -1,10 +1,10 @@
 ## SETUP:
-### Run the following bash commands in terminal to set secrets.
+#### Run the following bash commands in terminal to set secrets.
 - export QUANDL_API_KEY='yourquandlapikeyhere'
 - export EMAIL='yourgmailhere@gmail.com'
 - export EMAIL='yourgmailpasswordhere'
 
-### Email config
+#### Email config
 - Set "Access for less secure apps" to secure in you Google mail account if needed.
 - This is needed for both running the app and running tests.
 
