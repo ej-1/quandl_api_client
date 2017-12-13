@@ -34,7 +34,7 @@ class QuandlApiClient
       begin
         yield
       rescue Net::OpenTimeout, Net::ReadTimeout
-        {error: {message: 'Timout error'}} # skicka HTTPparty exception
+        {error: {message: 'Timout error'}}
       end
     end
 end

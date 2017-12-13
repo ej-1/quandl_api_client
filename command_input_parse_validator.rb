@@ -32,7 +32,7 @@ module CommandInputParseAndValidator
     begin validate_date_format(date) rescue false end
   end
 
-  def validate_date_format(date) # maybe just need this for validation. otherwise just pass it to the ruby clientö.
+  def validate_date_format(date)
     date_components = date&.split('-')
     date_components[0].length == 4 &&
       date_components[1].length == 2 &&

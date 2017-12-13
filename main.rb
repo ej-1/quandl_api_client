@@ -5,10 +5,8 @@ require './client_runner'
 @request_type = 'get'
 @email_recipient = 'erikwjonsson@gmail.com'
 
-if __FILE__ == $0 # Helps prevent rspec from executing the file on require.
-  loop do
-    command_line_input = gets.chomp # => AAPL, 2017-01-31 # invalid date, invalid ticker etc. different formats of date.
-    @client_runner.run_request(@api_client, @request_type, command_line_input, @email_recipient)
-    break if command_line_input == 'exit'
-  end
+loop do
+  command_line_input = gets.chomp # => AAPL, 2017-01-31
+  @client_runner.run_request(@api_client, @request_type, command_line_input, @email_recipient)
+  break if command_line_input == 'exit'
 end
