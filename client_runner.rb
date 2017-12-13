@@ -38,13 +38,18 @@ class ClientRunner
     end
 
     def send_email_notification(recipient, message_components = {})
-      body = "ROI: #{message_components[:roi]} \nMax drawdown: #{message_components[:max_drawdown]}"
+      body = "ROI: #{to_percent(message_components[:roi])} % \n"\
+             "Max drawdown: #{to_percent(message_components[:max_drawdown])} %"
       message = Notifier.welcome(recipient, body)
       message.deliver_now
     end
 
     def parse_input_and_validate(command_line_input) # => 'aapl' '2017-08-01'
       @ticker, @date = parse_and_validate_input(command_line_input)
+    end
+
+    def retry_request(api_client, request_type)
+      3.times { api_client.send(request_type, @ticker, @date) }
     end
 
     def send_request_to_api(api_client, request_type)
@@ -76,7 +81,9 @@ class ClientRunner
       return_on_investment(initial_price, final_value)
     end
 
-    def retry_request(api_client, request_type)
-      3.times { api_client.send(request_type, @ticker, @date) }
+    # Maybe should move this to a separate class cause it doesn't really belong in
+    # ClientRunner, but I'll leave it for now.
+    def to_percent(float)
+      (float * 100).round(1)
     end
 end
