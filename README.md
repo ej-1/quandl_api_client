@@ -1,20 +1,19 @@
-SETUP:
-run the following bash commands in terminal to set secrets.
+## SETUP:
+# Run the following bash commands in terminal to set secrets.
+- export QUANDL_API_KEY='yourquandlapikeyhere'
+- export EMAIL='yourgmailhere@gmail.com'
+- export EMAIL='yourgmailpasswordhere'
 
-export QUANDL_API_KEY='yourquandlapikeyhere'
-export EMAIL='yourgmailhere@gmail.com'
-export EMAIL='yourgmailpasswordhere'
+# Email onfig
+- Set "Access for less secure apps" to secure in you Google mail account if needed.
+- This is needed for both running the app and running tests.
 
-Set "Access for less secure apps" to secure in you Google mail account if needed.
+## RUN APP:
+- main.rb is the main application file.
+- to run app: `ruby main.rb`
+- Example input format: `AAPL 2017-02-01`
 
-This is needed for both running the app and running tests.
-
-RUN APP:
-main.rb is the main application file.
-to run: ruby main.rb
-Example input format: AAPL 2017-02-01
-
-Remaining TODOs.
+## Remaining TODOs.
 - sandbox emails in testing.
 - Make handle_response method in ClientRunner class more specific with dealing with errors. Especially in the last part.
 - Implement caching in quandl_api_client. Can use Redis for that.
