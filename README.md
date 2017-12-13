@@ -21,5 +21,5 @@ Remaining TODOs.
 - Move class and module files to a lib folder.
 - DataFormatter should probably be a module instead of a class.
 - Missed that I was supposed to interact with one more API than Quandl. Quite much, I think. I think the emails is sufficient.
-- Create a promt in the CLI asking users for date and ticker.
+- Create a prompt in the CLI asking users for date and ticker.
 - clean up comments from spec_helper.
