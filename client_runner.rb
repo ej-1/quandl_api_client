@@ -1,30 +1,26 @@
-require_relative 'command_input_validator'
+require_relative 'command_input_parse_validator'
 require_relative 'quandl_api_client'
 require_relative 'data_validator'
 require_relative 'data_formatter'
 require_relative 'max_drawdown_calculator'
 require_relative 'roi_calculator'
 require_relative 'notifier'
+require_relative 'config/mail_config'
+
 require 'action_mailer'
 
-ActionMailer::Base.smtp_settings = {
-  address:        'smtp.gmail.com',
-  port:            587,
-  user_name:      ENV['EMAIL'],
-  password:       ENV['EMAIL_PASSWORD'],
-  authentication: :login                 # :plain, :login or :cram_md5
-}
-
 class ClientRunner
-  include CommandInputValidator
+  include CommandInputParseAndValidator
   include RoiCalculator
   include DataValidator
 
   def run_request(api_client, request_type, command_line_input, email_recipient)
     parse_input(command_line_input)
-    response = send_request_to_api(api_client, request_type)
-    # if resposne is ok.
-    handle_response(response, email_recipient)
+    unless @ticker.nil? || @date.nil?
+      response = send_request_to_api(api_client, request_type)
+      # if resposne is ok.
+      handle_response(response, email_recipient)
+    end
   end
 
   private
@@ -60,7 +56,7 @@ class ClientRunner
     end
 
     def valid_data_format?(table_data)
-      validate(table_data)
+      validate_data(table_data)
     end
 
     def calculate_roi_and_max_drawdown(json)

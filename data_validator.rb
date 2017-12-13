@@ -1,6 +1,6 @@
 module DataValidator
 
-  def validate(json_data)
+  def validate_data(json_data)
     data = json_data['dataset_data']
     validate_data_type(data) && validate_column(data)
   end
