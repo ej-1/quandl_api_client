@@ -24,12 +24,22 @@ class ClientRunner
     parse_input(command_line_input)
     response = send_request_to_api(api_client, request_type)
     # if resposne is ok.
-    roi, max_drawdown = calculate_roi_and_max_drawdown(response)
-    message_components = {roi: roi, max_drawdown: max_drawdown}
-    send_email_notification(email_recipient, message_components)
+    handle_response(response, email_recipient)
   end
 
   private
+
+    def handle_response(response, email_recipient)
+      if response['quandl_error']
+        puts response['quandl_error']
+      elsif valid_data_format?(response)
+        roi, max_drawdown = calculate_roi_and_max_drawdown(response)
+        message_components = {roi: roi, max_drawdown: max_drawdown}
+        send_email_notification(email_recipient, message_components)
+      else
+        puts 'something probably did not go as you wanted'
+      end
+    end
 
     def send_email_notification(recipient, message_components = {})
       body = "ROI: #{message_components[:roi]} \nMax drawdown: #{message_components[:max_drawdown]}"

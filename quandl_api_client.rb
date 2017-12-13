@@ -17,7 +17,6 @@ class QuandlApiClient
     handle_timeouts do
       options = options(start_date)
       url = "#{ BASE_URI }#{ base_path(ticker) }"
-      binding.pry
       response = self.class.get(url, options)
       response.parsed_response
     end

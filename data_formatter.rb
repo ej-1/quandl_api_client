@@ -3,7 +3,7 @@ class DataFormatter
 
   def initialize(json)
     @data = json
-    @table_data = json['datatable']['data']
+    @table_data = json['dataset_data']['data']
   end
 
   def closing_prices # => [{ close_price: 27.7 }]
@@ -13,6 +13,6 @@ class DataFormatter
     # EATHER WAY, SHOULD DEFINATELY BE INCLUDED IN MAXDRAWDOWNCALCULATOR, NOT IN COMMANDRUNNER.
     # EMBEDDING IT MAY SUGGEST THAT THE FORMAT ONLY EXISTS FOR THIS THE CONTECTS OF CALCULATING MAXDRAWDOWN, WHICH
     # I THINK IS CORRECT. PAGE 32 IN POODR.
-    @table_data.map { |row| row[5] }
+    @table_data.map { |row| row[4] }
   end
 end
