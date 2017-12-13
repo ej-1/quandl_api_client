@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './command_input_parse_validator.rb'
 require 'date'
 

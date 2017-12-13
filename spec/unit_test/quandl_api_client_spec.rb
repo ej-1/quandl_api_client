@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './quandl_api_client.rb'
 
 describe QuandlApiClient do

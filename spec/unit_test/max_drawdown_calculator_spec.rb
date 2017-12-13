@@ -1,4 +1,3 @@
-require 'spec_helper'
 require './max_drawdown_calculator.rb'
 
 describe MaxDrawdownCalculator do
