@@ -4,20 +4,38 @@ require_relative 'data_validator'
 require_relative 'data_formatter'
 require_relative 'max_drawdown_calculator'
 require_relative 'roi_calculator'
+require_relative 'notifier'
+require 'action_mailer'
+
+ActionMailer::Base.smtp_settings = {
+  address:        'smtp.gmail.com',
+  port:            587,
+  user_name:      ENV['EMAIL'],
+  password:       ENV['EMAIL_PASSWORD'],
+  authentication: :login                 # :plain, :login or :cram_md5
+}
 
 class ClientRunner
   include CommandInputValidator
   include RoiCalculator
   include DataValidator
 
-  def run_request(api_client, request_type, command_line_input)
+  def run_request(api_client, request_type, command_line_input, email_recipient)
     parse_input(command_line_input)
     response = send_request_to_api(api_client, request_type)
     # if resposne is ok.
-    calculate_roi_and_max_drawdown(response)
+    roi, max_drawdown = calculate_roi_and_max_drawdown(response)
+    message_components = {roi: roi, max_drawdown: max_drawdown}
+    send_email_notification(email_recipient, message_components)
   end
 
   private
+
+    def send_email_notification(recipient, message_components = {})
+      body = "ROI: #{message_components[:roi]} \nMax drawdown: #{message_components[:max_drawdown]}"
+      message = Notifier.welcome(recipient, body)
+      message.deliver_now
+    end
 
     def parse_input(command_line_input) # => 'AAPL' '2017-08-01'
       @ticker, @date = parse_and_validate_input(command_line_input)

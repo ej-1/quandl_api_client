@@ -15,7 +15,7 @@ describe ClientRunner do
     it 'prints ROI and max drawdown' do
       command_line_input = 'AAPL 1981-01-21'
 
-      @client_runner.run_request(@api_client, 'get', command_line_input)
+      @client_runner.run_request(@api_client, 'get', command_line_input, 'somerecipient@fakemail.blabla')
       expect([5.005913043478261, 0.7641560309185692])
     end
   end
