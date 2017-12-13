@@ -7,6 +7,7 @@ export EMAIL='yourgmailpasswordhere'
 
 Set "Access for less secure apps" to secure in you Google mail account if needed.
 
+This is needed for both running the app and running tests.
 
 RUN APP:
 main.rb is the main application file.
